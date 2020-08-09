@@ -4,37 +4,23 @@ import 'package:chores_app/motivation/src/domain/repository/chore_repository.dar
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ChoreForm extends StatelessWidget with SelfSubmitWidget {
-  final GlobalKey<_FormFieldsState> _stateKey = GlobalKey();
+class ChoreForm extends StatefulWidget {
   final String choreId;
 
   ChoreForm(this.choreId);
 
   @override
-  Future<void> submit() async {
-    _stateKey.currentState.submit(choreId);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _FormFields(key: _stateKey);
-  }
+  _ChoreFormState createState() => _ChoreFormState();
 }
 
-class _FormFields extends StatefulWidget {
-  _FormFields({Key key}) : super(key: key);
-
-  @override
-  _FormFieldsState createState() => _FormFieldsState();
-}
-
-class _FormFieldsState extends State<_FormFields> {
+class _ChoreFormState extends SelfSubmitState<ChoreForm> {
   TextEditingController rewardController = TextEditingController();
 
-  Future<void> submit(String choreId) async {
-    await context.read<ChoreRepository>().add(Chore(
-          id: choreId,
-          reward: int.parse(rewardController.text),
+  @override
+  Future<void> submit() async {
+    context.read<ChoreRepository>().update(Chore(
+          id: widget.choreId,
+          reward: int.tryParse(rewardController.text),
         ));
   }
 
@@ -45,14 +31,6 @@ class _FormFieldsState extends State<_FormFields> {
       child: TextFormField(
         controller: rewardController,
         decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Reward'),
-        validator: (value) {
-          try {
-            int.parse(rewardController.text);
-            return null;
-          } catch (e) {
-            return 'Must be number';
-          }
-        },
       ),
     );
   }

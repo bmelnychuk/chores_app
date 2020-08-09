@@ -20,8 +20,13 @@ class InMemoryChoreRepository implements ChoreRepository {
   }
 
   @override
-  Future<void> add(Chore chore) async {
+  Future<void> update(Chore chore) async {
     final newList = List<Chore>.unmodifiable([..._subject.value, chore]);
     _subject.add(newList);
+  }
+
+  @override
+  Future<Chore> getById(String id) {
+    return getByIds([]).map((all) => all.firstWhere((c) => c.id == id)).first;
   }
 }

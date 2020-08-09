@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class FamilyMembers extends StatelessWidget {
-  final Widget Function(BuildContext, List<String>) builder;
+  final Widget Function(List<String>) builder;
 
   FamilyMembers({this.builder});
 
@@ -11,6 +11,6 @@ class FamilyMembers extends StatelessWidget {
   Widget build(BuildContext context) {
     final familyMembers = context.watch<Map<String, Profile>>();
     final profileIds = familyMembers.values.map((c) => c.id).toList();
-    return builder(context, profileIds);
+    return builder(profileIds);
   }
 }

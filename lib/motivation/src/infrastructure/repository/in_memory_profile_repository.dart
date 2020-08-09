@@ -3,20 +3,32 @@ import 'package:chores_app/motivation/src/domain/repository/profile_repository.d
 import 'package:rxdart/rxdart.dart';
 
 class InMemoryProfileRepository implements ProfileRepository {
-  final Subject<List<Profile>> _subject = BehaviorSubject.seeded([]);
+  final BehaviorSubject<Map<String, Profile>> _subject = BehaviorSubject.seeded({});
 
   InMemoryProfileRepository() {
-    final profiles = [
-      Profile(id: 'sophia', totalScore: 96),
-      Profile(id: 'alex', totalScore: 12),
-      Profile(id: 'bruce', totalScore: 25),
-      Profile(id: 'kate', totalScore: 60),
-    ];
+    final profiles = Map<String, Profile>.fromIterable([
+      Profile(id: 'sophia'),
+      Profile(id: 'alex'),
+      Profile(id: 'bruce'),
+      Profile(id: 'kate'),
+    ], key: (c) => c.id, value: (c) => c);
     _subject.add(profiles);
   }
 
   @override
   Stream<List<Profile>> getByIds(List<String> ids) {
-    return _subject.stream;
+    return _subject.stream.map((map) => List<Profile>.unmodifiable(map.values));
+  }
+
+  @override
+  Future<Profile> getById(String id) async {
+    return getByIds([]).map((all) => all.firstWhere((c) => c.id == id)).first;
+  }
+
+  @override
+  Future<void> update(Profile profile) async {
+    final current = _subject.value;
+    current[profile.id] = profile;
+    _subject.add(Map.from(current));
   }
 }

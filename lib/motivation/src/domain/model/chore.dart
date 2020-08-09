@@ -6,6 +6,6 @@ class Chore {
 
   Chore({
     @required this.id,
-    this.reward = 0,
-  });
+    int reward,
+  }) : this.reward = reward ?? 0;
 }

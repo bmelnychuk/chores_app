@@ -8,7 +8,7 @@ class FamilyMembersGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FamilyMembers(
-      builder: (_, profileIds) {
+      builder: (profileIds) {
         if (profileIds.isEmpty) return Container();
 
         return MultiProvider(

@@ -4,37 +4,23 @@ import 'package:chores_app/chores/src/domain/repository/chore_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ChoreForm extends StatelessWidget with SelfSubmitWidget {
-  final GlobalKey<_FormFieldsState> _stateKey = GlobalKey();
+class ChoreForm extends StatefulWidget {
   final String choreId;
 
   ChoreForm(this.choreId);
 
   @override
-  Future<void> submit() async {
-    _stateKey.currentState.submit(choreId);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _FormFields(key: _stateKey);
-  }
+  _ChoreFormState createState() => _ChoreFormState();
 }
 
-class _FormFields extends StatefulWidget {
-  _FormFields({Key key}) : super(key: key);
-
-  @override
-  _FormFieldsState createState() => _FormFieldsState();
-}
-
-class _FormFieldsState extends State<_FormFields> {
+class _ChoreFormState extends SelfSubmitState<ChoreForm> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
 
-  Future<void> submit(String choreId) async {
+  @override
+  Future<void> submit() async {
     await context.read<ChoreRepository>().add(Chore(
-          id: choreId,
+          id: widget.choreId,
           dueDate: DateTime.now(),
           description: descriptionController.text,
         ));
