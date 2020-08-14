@@ -1,10 +1,10 @@
-import 'package:chores_app/chores/chores.dart';
 import 'package:chores_app/motivation/src/application/chore_interactor.dart';
 import 'package:chores_app/motivation/src/domain/repository/chore_repository.dart';
 import 'package:chores_app/motivation/src/domain/repository/profile_repository.dart';
 import 'package:chores_app/motivation/src/infrastructure/repository/in_memory_chore_repository.dart';
 import 'package:chores_app/motivation/src/infrastructure/repository/in_memory_profile_repository.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
 
 final _choreRepository = InMemoryChoreRepository();
 final _profileRepository = InMemoryProfileRepository();
@@ -16,6 +16,10 @@ final providers = [
 ];
 
 class OnInit {
+  final Subject<dynamic> choreEvents;
+
+  OnInit(this.choreEvents);
+
   Future run() async {
     choreEvents.listen((choreDone) {
       _choreInteractor.resolveChore(choreDone.choreId, choreDone.assigneeId);
